@@ -33,6 +33,7 @@ class CoreDataManager {
         noteEntity.text = note.text
         noteEntity.dateCreated = note.dateCreated
         noteEntity.dateEdited = note.dateEdited
+        noteEntity.isPinned = false
 
         saveContext()
     }

@@ -11,4 +11,5 @@ struct Note {
     var text: String
     var dateCreated: Date?
     var dateEdited: Date
+    var isPinned = false
 }
