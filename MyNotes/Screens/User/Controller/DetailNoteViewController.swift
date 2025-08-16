@@ -43,8 +43,12 @@ class DetailNoteViewController: UIViewController {
         
         if let text = textView.text {
             if let note {
-                let updatedNote = Note(text: text, dateCreated: nil, dateEdited: Date())
-                manager.updateNote(updatedNote: updatedNote, noteEntity: note)
+                if let previousText = note.text {
+                    if text != previousText {
+                        let updatedNote = Note(text: text, dateCreated: nil, dateEdited: Date())
+                        manager.updateNote(updatedNote: updatedNote, noteEntity: note)
+                    }
+                }
             } else {
                 let newNote = Note(text: text, dateCreated: Date(), dateEdited: Date())
                 manager.addNote(newNote)

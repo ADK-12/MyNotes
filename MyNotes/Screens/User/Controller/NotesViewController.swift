@@ -23,13 +23,13 @@ class NotesViewController: UIViewController {
     
     var totalNotes = 0 {
         didSet {
-            if notes.count == 0 {
+            if totalNotes == 0 {
                 totalLabel.text = "No Notes"
             }
-            if notes.count > 1 {
-                totalLabel.text = "\(notes.count) Notes"
+            if totalNotes == 1 {
+                totalLabel.text = "1 Note"
             } else {
-                totalLabel.text = "\(notes.count) Note"
+                totalLabel.text = "\(totalNotes) Notes"
             }
         }
     }
@@ -44,7 +44,7 @@ class NotesViewController: UIViewController {
         
         notes = manager.fetchNotes()
         
-        setupPinnedNotes()
+        sortOutPinnedNotes()
         
         sortNotes()
         
@@ -61,29 +61,37 @@ class NotesViewController: UIViewController {
         
         notesTableView.register(UINib(nibName: "NoteTableViewCell", bundle: nil), forCellReuseIdentifier: "NoteTableViewCell")
         notesCollectionView.register(UINib(nibName: "NoteCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "NoteCollectionViewCell")
-        
+        notesCollectionView.register(CollectionSectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CollectionSectionHeaderView.reuseIdentifier)
     }
     
     
     override func viewDidAppear(_ animated: Bool) {
+        for (index,note) in pinnedNotes.enumerated() {
+            if let text = note.text {
+                if text.isEmpty{
+                    manager.deleteNote(note)
+                    pinnedNotes.remove(at: index)
+                    if userDefaults.bool(forKey: "isGalleryView") {
+                        notesCollectionView.reloadData()
+                    } else {
+                        notesTableView.reloadData()
+                    }
+                    return
+                }
+            }
+        }
+        
         for (index,note) in notes.enumerated() {
             if let text = note.text {
                 if text.isEmpty{
                     manager.deleteNote(note)
                     notes.remove(at: index)
-                    notesTableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .top)
-                    notesCollectionView.deleteItems(at: [IndexPath(row: index, section: 0)])
-                }
-            }
-        }
-        
-        for (index,note) in pinnedNotes.enumerated() {
-            if let text = note.text {
-                if text.isEmpty{
-                    manager.deleteNote(note)
-                    notes.remove(at: index)
-                    notesTableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .top)
-                    notesCollectionView.deleteItems(at: [IndexPath(row: index, section: 0)])
+                    if userDefaults.bool(forKey: "isGalleryView") {
+                        notesCollectionView.reloadData()
+                    } else {
+                        notesTableView.reloadData()
+                    }
+                    return
                 }
             }
         }
@@ -92,15 +100,9 @@ class NotesViewController: UIViewController {
     }
     
     
-    func setupPinnedNotes() {
-        pinnedNotes.removeAll()
-        
-        for (index,note) in notes.enumerated() {
-            if note.isPinned {
-                pinnedNotes.append(note)
-                notes.remove(at: index)
-            }
-        }
+    func sortOutPinnedNotes() {
+        pinnedNotes = notes.filter { $0.isPinned }
+        notes.removeAll { $0.isPinned }
     }
     
     
@@ -119,7 +121,7 @@ class NotesViewController: UIViewController {
     
     
     func setupConfiguration() {
-        title = "Notes"
+        title = "MyNotes"
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.tintColor = UIColor(red: 214/255, green: 170/255, blue: 6/255, alpha: 1)
         
@@ -232,8 +234,6 @@ class NotesViewController: UIViewController {
     
     
     func setupToolbar() {
-        totalLabel = UILabel()
-        totalLabel.text = "No Notes"
         totalLabel.font = UIFont.systemFont(ofSize: 10)
         totalLabel.textColor = .black
         totalLabel.sizeToFit()
@@ -259,19 +259,6 @@ class NotesViewController: UIViewController {
         detailNoteVC.note = note
         navigationController?.pushViewController(detailNoteVC, animated: true)
     }
-    
-    
-    @objc func longPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
-        if gestureRecognizer.state == .began {
-            let touchPoint = gestureRecognizer.location(in: notesTableView)
-            
-            if let indexPath = notesTableView.indexPathForRow(at: touchPoint) {
-                
-            }
-            
-        }
-    }
-    
 }
 
 
@@ -286,15 +273,70 @@ extension NotesViewController: UIScrollViewDelegate {
 
 
 
-extension NotesViewController: UITableViewDataSource, UICollectionViewDataSource {
+extension NotesViewController: UITableViewDataSource, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return pinnedNotes.isEmpty ? 1 : 2
+        if notes.isEmpty && pinnedNotes.isEmpty {
+            return 0
+        }
+        
+        return (pinnedNotes.isEmpty || notes.isEmpty ? 1 : 2)
     }
     
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return pinnedNotes.isEmpty ? 1 : 2
+        if notes.isEmpty && pinnedNotes.isEmpty {
+            return 0
+        }
+        
+        return (pinnedNotes.isEmpty || notes.isEmpty ? 1 : 2)
+    }
+    
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 50))
+        let titleLabel = UILabel(frame: headerView.bounds)
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 30)
+        titleLabel.textAlignment = .left
+        if !pinnedNotes.isEmpty {
+            if section == 0 {
+                titleLabel.text = "Pinned"
+            } else {
+                titleLabel.text = "Notes"
+            }
+        } else {
+            titleLabel.text = "Notes"
+        }
+        headerView.addSubview(titleLabel)
+        
+        return headerView
+    }
+    
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 50
+    }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        if kind == UICollectionView.elementKindSectionHeader {
+            if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: CollectionSectionHeaderView.reuseIdentifier, for: indexPath) as? CollectionSectionHeaderView {
+                if !pinnedNotes.isEmpty {
+                    if indexPath.section == 0 {
+                        header.titleLabel.text = "Pinned"
+                        return header
+                    }
+                }
+                header.titleLabel.text = "Notes"
+                return header
+            }
+        }
+        return UICollectionReusableView()
+    }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: collectionView.frame.width, height: 50)
     }
     
     
@@ -391,20 +433,16 @@ extension NotesViewController: UITableViewDelegate, UICollectionViewDelegate {
                 if indexPath.section == 0 {
                     self.manager.deleteNote(self.pinnedNotes[indexPath.row])
                     self.pinnedNotes.remove(at: indexPath.row)
-                    self.notesTableView.deleteRows(at: [indexPath], with: .top)
-                    self.totalNotes = self.notes.count
-                    
-                    if self.pinnedNotes.isEmpty {
-//              solve this bug
-                    }
+                    self.notesTableView.reloadData()
+                    self.totalNotes = self.notes.count + self.pinnedNotes.count
                     return
                 }
             }
             
             self.manager.deleteNote(self.notes[indexPath.row])
             self.notes.remove(at: indexPath.row)
-            self.notesTableView.deleteRows(at: [indexPath], with: .top)
-            self.totalNotes = self.notes.count
+            self.notesTableView.reloadData()
+            self.totalNotes = self.notes.count + self.pinnedNotes.count
         }
         deleteAction.image = UIImage(systemName: "trash.fill")
         
@@ -439,26 +477,27 @@ extension NotesViewController: UITableViewDelegate, UICollectionViewDelegate {
     
     
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        var pinAction = UIContextualAction()
-        
         if !pinnedNotes.isEmpty {
             if indexPath.section == 0 {
-                pinAction = UIContextualAction(style: .normal, title: "Unpin") { (_, _, _) in
+                let unpinAction = UIContextualAction(style: .normal, title: "Unpin") { (_, _, _) in
                     self.pinnedNotes[indexPath.row].isPinned = false
+                    self.manager.saveContext()
                     self.notes.append(self.pinnedNotes[indexPath.row])
                     self.pinnedNotes.remove(at: indexPath.row)
                     self.sortNotes()
                     self.notesTableView.reloadData()
                 }
-                pinAction.image = UIImage(systemName: "pin.slash.fill")
-                pinAction.backgroundColor = UIColor(red: 230/255, green: 157/255, blue: 11/255, alpha: 1)
+                unpinAction.image = UIImage(systemName: "pin.slash.fill")
+                unpinAction.backgroundColor = UIColor(red: 230/255, green: 157/255, blue: 11/255, alpha: 1)
                 
-                return UISwipeActionsConfiguration(actions: [pinAction])
+                return UISwipeActionsConfiguration(actions: [unpinAction])
             }
         }
         
-        pinAction = UIContextualAction(style: .normal, title: "Pin") { (_, _, _) in
+        let pinAction = UIContextualAction(style: .normal, title: "Pin") { (_, _, _) in
             self.notes[indexPath.row].isPinned = true
+            self.manager.saveContext()
+            
             self.pinnedNotes.append(self.notes[indexPath.row])
             self.notes.remove(at: indexPath.row)
             self.sortNotes()
