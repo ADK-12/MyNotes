@@ -64,6 +64,18 @@ class NoteCollectionViewCell: UICollectionViewCell {
             
             title.text = heading
             subtitle.text = whenEdited
+            
+            let textView = UITextView()
+            textView.text = text
+            textView.frame = CGRect(x: 0, y: 0, width: 200, height: 150)
+            textView.font = UIFont.systemFont(ofSize: 18)
+            textView.textContainerInset = .init(top: 15, left: 15, bottom: 15, right: 15)
+            
+            let renderer = UIGraphicsImageRenderer(size: textView.bounds.size)
+            let image = renderer.image { ctx in
+                textView.layer.render(in: ctx.cgContext)
+            }
+            displayImage.image = image
         }
     }
 

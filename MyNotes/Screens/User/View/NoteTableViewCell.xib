@@ -33,16 +33,28 @@
                             </label>
                         </subviews>
                     </stackView>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SWK-bP-gaI">
+                        <rect key="frame" x="-40" y="13" width="24" height="24"/>
+                        <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <state key="normal" title="Button"/>
+                        <buttonConfiguration key="configuration" style="plain"/>
+                    </button>
                 </subviews>
                 <constraints>
+                    <constraint firstAttribute="trailing" secondItem="y8j-T2-5iU" secondAttribute="trailing" constant="16" id="XOF-Yr-8FR"/>
+                    <constraint firstItem="SWK-bP-gaI" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="-40" id="a7c-Nh-DRa"/>
                     <constraint firstItem="y8j-T2-5iU" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="g66-ga-y3P"/>
-                    <constraint firstAttribute="trailing" secondItem="y8j-T2-5iU" secondAttribute="trailing" constant="16" id="iqm-0k-dJd"/>
+                    <constraint firstAttribute="bottom" secondItem="SWK-bP-gaI" secondAttribute="bottom" constant="13" id="nGY-dv-w2M"/>
                     <constraint firstItem="y8j-T2-5iU" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="tHu-GB-XWE"/>
                     <constraint firstAttribute="bottom" secondItem="y8j-T2-5iU" secondAttribute="bottom" constant="8" id="zBW-tv-Gf2"/>
+                    <constraint firstItem="SWK-bP-gaI" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="13" id="ze6-C4-Hjb"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
+                <outlet property="contentLeadingConstraint" destination="tHu-GB-XWE" id="cXG-Sc-JAp"/>
+                <outlet property="selectButoon" destination="SWK-bP-gaI" id="0qX-Nu-agL"/>
+                <outlet property="selectButtonLeadingConstraint" destination="a7c-Nh-DRa" id="zLH-Ub-Ltn"/>
                 <outlet property="subtitle" destination="Hil-Gh-xpA" id="n6q-U6-g0U"/>
                 <outlet property="title" destination="Hct-z3-wDP" id="HCP-bZ-niM"/>
             </connections>

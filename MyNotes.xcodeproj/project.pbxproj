@@ -12,12 +12,11 @@
 		483A43C92E4E40E6004E8C5A /* NoteCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A43C72E4E40E6004E8C5A /* NoteCollectionViewCell.swift */; };
 		483A43CA2E4E40E6004E8C5A /* NoteCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 483A43C82E4E40E6004E8C5A /* NoteCollectionViewCell.xib */; };
 		483A444C2E4F8A77004E8C5A /* CollectionSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A444B2E4F8A77004E8C5A /* CollectionSectionHeaderView.swift */; };
+		483A44502E50A848004E8C5A /* NotePreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A444F2E50A848004E8C5A /* NotePreviewViewController.swift */; };
 		4855189E2E4D079D002BC3BD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485518882E4D079D002BC3BD /* AppDelegate.swift */; };
 		4855189F2E4D079D002BC3BD /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485518892E4D079D002BC3BD /* SceneDelegate.swift */; };
 		485518A02E4D079D002BC3BD /* DetailNoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4855188B2E4D079D002BC3BD /* DetailNoteViewController.swift */; };
-		485518A12E4D079D002BC3BD /* NoteCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4855188C2E4D079D002BC3BD /* NoteCollectionCell.swift */; };
 		485518A22E4D079D002BC3BD /* NotesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4855188D2E4D079D002BC3BD /* NotesViewController.swift */; };
-		485518A32E4D079D002BC3BD /* NoteTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4855188E2E4D079D002BC3BD /* NoteTableCell.swift */; };
 		485518A42E4D079D002BC3BD /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485518902E4D079D002BC3BD /* CoreDataManager.swift */; };
 		485518A62E4D079D002BC3BD /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485518932E4D079D002BC3BD /* Note.swift */; };
 		485518A72E4D079D002BC3BD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 485518962E4D079D002BC3BD /* LaunchScreen.storyboard */; };
@@ -32,13 +31,12 @@
 		483A43C72E4E40E6004E8C5A /* NoteCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteCollectionViewCell.swift; sourceTree = "<group>"; };
 		483A43C82E4E40E6004E8C5A /* NoteCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoteCollectionViewCell.xib; sourceTree = "<group>"; };
 		483A444B2E4F8A77004E8C5A /* CollectionSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CollectionSectionHeaderView.swift; path = MyNotes/Screens/User/View/CollectionSectionHeaderView.swift; sourceTree = SOURCE_ROOT; };
+		483A444F2E50A848004E8C5A /* NotePreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotePreviewViewController.swift; sourceTree = "<group>"; };
 		485517F12E4CCFEE002BC3BD /* MyNotes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyNotes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		485518882E4D079D002BC3BD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		485518892E4D079D002BC3BD /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		4855188B2E4D079D002BC3BD /* DetailNoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailNoteViewController.swift; sourceTree = "<group>"; };
-		4855188C2E4D079D002BC3BD /* NoteCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteCollectionCell.swift; sourceTree = "<group>"; };
 		4855188D2E4D079D002BC3BD /* NotesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesViewController.swift; sourceTree = "<group>"; };
-		4855188E2E4D079D002BC3BD /* NoteTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteTableCell.swift; sourceTree = "<group>"; };
 		485518902E4D079D002BC3BD /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		485518932E4D079D002BC3BD /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 		485518952E4D079D002BC3BD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -67,6 +65,7 @@
 				483A43C72E4E40E6004E8C5A /* NoteCollectionViewCell.swift */,
 				483A43C82E4E40E6004E8C5A /* NoteCollectionViewCell.xib */,
 				483A444B2E4F8A77004E8C5A /* CollectionSectionHeaderView.swift */,
+				483A444F2E50A848004E8C5A /* NotePreviewViewController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -101,8 +100,6 @@
 			children = (
 				4855188D2E4D079D002BC3BD /* NotesViewController.swift */,
 				4855188B2E4D079D002BC3BD /* DetailNoteViewController.swift */,
-				4855188C2E4D079D002BC3BD /* NoteCollectionCell.swift */,
-				4855188E2E4D079D002BC3BD /* NoteTableCell.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -252,9 +249,8 @@
 				4855189F2E4D079D002BC3BD /* SceneDelegate.swift in Sources */,
 				485518A02E4D079D002BC3BD /* DetailNoteViewController.swift in Sources */,
 				483A43C52E4E2DEC004E8C5A /* NoteTableViewCell.swift in Sources */,
-				485518A12E4D079D002BC3BD /* NoteCollectionCell.swift in Sources */,
+				483A44502E50A848004E8C5A /* NotePreviewViewController.swift in Sources */,
 				485518A22E4D079D002BC3BD /* NotesViewController.swift in Sources */,
-				485518A32E4D079D002BC3BD /* NoteTableCell.swift in Sources */,
 				485518A42E4D079D002BC3BD /* CoreDataManager.swift in Sources */,
 				483A43C92E4E40E6004E8C5A /* NoteCollectionViewCell.swift in Sources */,
 				485518A62E4D079D002BC3BD /* Note.swift in Sources */,

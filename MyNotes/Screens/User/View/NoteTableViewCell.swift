@@ -9,6 +9,10 @@ import UIKit
 
 class NoteTableViewCell: UITableViewCell {
     
+    @IBOutlet var contentLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet var selectButtonLeadingConstraint: NSLayoutConstraint!
+    
+    @IBOutlet var selectButoon: UIButton!
     @IBOutlet var title: UILabel!
     @IBOutlet var subtitle: UILabel!
     
@@ -18,14 +22,29 @@ class NoteTableViewCell: UITableViewCell {
         }
     }
     
+    var inSelectionMode: Bool? {
+        didSet {
+            changeView()
+        }
+    }
+    
+    
     override func awakeFromNib() {
         super.awakeFromNib()
+        selectButoon.setImage(UIImage(systemName: "circle"), for: .normal)
         // Initialization code
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
+        if selected {
+            selectButoon.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
+            selectButoon.tintColor = UIColor(red: 214/255, green: 170/255, blue: 6/255, alpha: 1)
+        } else {
+            selectButoon.setImage(UIImage(systemName: "circle"), for: .normal)
+            selectButoon.tintColor = .lightGray
+        }
         // Configure the view for the selected state
     }
     
@@ -74,6 +93,31 @@ class NoteTableViewCell: UITableViewCell {
             title.text = heading
             subtitle.text = whenEdited + "   " + body
         }
+    }
+    
+    func changeView() {
+        guard let inSelectionMode else { return }
+        
+        if inSelectionMode {
+        
+            contentLeadingConstraint.constant = 60
+            selectButtonLeadingConstraint.constant = 10
+            
+            UIView.animate(withDuration: 0.3) {
+                self.contentView.layoutIfNeeded()
+            }
+        } else {
+            contentLeadingConstraint.constant = 16
+            selectButtonLeadingConstraint.constant = -40
+            
+            UIView.animate(withDuration: 0.3) {
+                self.contentView.layoutIfNeeded()
+            }
+        }
+    }
+    
+    func cellSelectedView() {
+        
     }
     
 }

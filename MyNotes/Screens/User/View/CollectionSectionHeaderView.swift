@@ -14,7 +14,7 @@ class CollectionSectionHeaderView: UICollectionReusableView {
 
         override init(frame: CGRect) {
             super.init(frame: frame)
-            titleLabel.font = UIFont.boldSystemFont(ofSize: 30)
+            titleLabel.font = UIFont.boldSystemFont(ofSize: 20)
             titleLabel.translatesAutoresizingMaskIntoConstraints = false
             addSubview(titleLabel)
             NSLayoutConstraint.activate([
