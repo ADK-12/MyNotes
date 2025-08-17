@@ -9,16 +9,18 @@ import UIKit
 import CoreData
 
 class DetailNoteViewController: UIViewController {
-
+    
+    @IBOutlet var dateEditedLabel: UILabel!
     @IBOutlet var textView: UITextView!
     
     private let manager = CoreDataManager()
     
     var note: NoteEntity?
     
-    var doneButton: UIBarButtonItem?
-    var undoButton: UIBarButtonItem?
-    var redoButton: UIBarButtonItem?
+    var shareButton = UIBarButtonItem()
+    var doneButton = UIBarButtonItem()
+    var undoButton = UIBarButtonItem()
+    var redoButton = UIBarButtonItem()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -60,23 +62,22 @@ class DetailNoteViewController: UIViewController {
     func setupConfiguration() {
         navigationBarConfiguration()
         
-        if let note {
-            textView.text = note.text
-        }
+        setupTextviewText()
         
         setupTextViewStyle()
         
-        updateFrameForKeyboard()
+        addKeyboardObserver()
     }
     
     
     func navigationBarConfiguration() {
-        let shareButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareTapped))
+        shareButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareTapped))
         doneButton = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(doneTapped))
-        undoButton = UIBarButtonItem(barButtonSystemItem: .undo, target: self, action: #selector(undoTapped))
-        redoButton = UIBarButtonItem(barButtonSystemItem: .redo, target: self, action: #selector(redoTapped))
+        undoButton = UIBarButtonItem(image: UIImage(systemName: "arrow.uturn.backward.circle"), style: .plain, target: self, action: #selector(undoTapped))
+        redoButton = UIBarButtonItem(image: UIImage(systemName: "arrow.uturn.forward.circle"), style: .plain, target: self, action: #selector(redoTapped))
+        redoButton.isEnabled = false
         
-        navigationItem.rightBarButtonItem = shareButton
+        navigationItem.rightBarButtonItems = [shareButton]
     }
     
     
@@ -94,30 +95,74 @@ class DetailNoteViewController: UIViewController {
     
     
     @objc func undoTapped() {
-        
+        textView.undoManager?.undo()
+        if let undoManager = textView.undoManager {
+            undoButton.isEnabled = undoManager.canUndo
+        }
     }
     
     
     @objc func redoTapped() {
+        textView.undoManager?.redo()
         
+        if let undoManager = textView.undoManager {
+            redoButton.isEnabled = undoManager.canRedo
+        }
     }
     
     
-    func updateFrameForKeyboard() {
-        //        let notificationCenter = NotificationCenter.default
-        //        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillHideNotification, object: nil)
-        //        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+    func setupTextviewText() {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "d MMMM yyyy 'at' h:mm a"
+        
+        if let note {
+            textView.text = note.text
+            dateEditedLabel.text = formatter.string(from: note.dateEdited ?? Date())
+        } else {
+            dateEditedLabel.text = formatter.string(from: Date())
+        }
     }
     
     
-    @objc func adjustForKeyboard(notificatin: Notification){
+    func setupTextViewStyle() {
+        guard let fullText = textView.text else { return }
         
-        guard let keyboardValue = notificatin.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
+        let attributedString = NSMutableAttributedString(string: fullText)
+        
+        if let firstLineEndIndex = fullText.firstIndex(of: "\n") {
+            let firstLineRange = NSRange(fullText.startIndex..<firstLineEndIndex, in: fullText)
+            let restTextRange = NSRange(firstLineEndIndex..<fullText.endIndex, in: fullText)
+            
+            let firstLineFont = UIFont.boldSystemFont(ofSize: 24)
+            let restTextFont = UIFont.systemFont(ofSize: 16)
+            
+            attributedString.addAttribute(.font, value: firstLineFont, range: firstLineRange)
+            attributedString.addAttribute(.font, value: restTextFont, range: restTextRange)
+            
+        } else {
+            let fullRange = NSRange(fullText.startIndex..<fullText.endIndex, in: fullText)
+            let firstLineFont = UIFont.boldSystemFont(ofSize: 24)
+            attributedString.addAttribute(.font, value: firstLineFont, range: fullRange)
+        }
+        
+        textView.attributedText = attributedString
+    }
+    
+    
+    func addKeyboardObserver() {
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillHideNotification, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+    }
+    
+    
+    @objc func adjustForKeyboard(notification: Notification){
+        guard let keyboardValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
         
         let keyboardScreenEndFrame = keyboardValue.cgRectValue
         let keyboardViewEndFrame = view.convert(keyboardScreenEndFrame, from: view.window)
         
-        if notificatin.name == UIResponder.keyboardWillHideNotification {
+        if notification.name == UIResponder.keyboardWillHideNotification {
             textView.contentInset = .zero
         } else {
             textView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height - view.safeAreaInsets.bottom, right: 0)
@@ -127,61 +172,38 @@ class DetailNoteViewController: UIViewController {
         
         let selectedRange = textView.selectedRange
         textView.scrollRangeToVisible(selectedRange)
-        
     }
     
-    
-    func setupTextViewStyle() {
-//        guard let fullText = textView.text else { return }
-//
-//        let attributedString = NSMutableAttributedString(string: fullText)
-//
-//        if let firstLineEndIndex = fullText.firstIndex(of: "\n") {
-//            let firstLineRange = NSRange(fullText.startIndex..<firstLineEndIndex, in: fullText)
-//            let restRange = NSRange(firstLineEndIndex..<fullText.endIndex, in: fullText)
-//
-//            // Fonts
-//            let firstLineFont = UIFont.boldSystemFont(ofSize: 24)
-//            let restFont = UIFont.systemFont(ofSize: 16)
-//
-//            // Apply styles
-//            attributedString.addAttribute(.font, value: firstLineFont, range: firstLineRange)
-//            attributedString.addAttribute(.font, value: restFont, range: restRange)
-//
-//        } else {
-//            // No newline, style whole text as first line
-//            let fullRange = NSRange(fullText.startIndex..<fullText.endIndex, in: fullText)
-//            let firstLineFont = UIFont.boldSystemFont(ofSize: 24)
-//            attributedString.addAttribute(.font, value: firstLineFont, range: fullRange)
-//        }
-//
-//        textView.attributedText = attributedString
-    }
 }
+
 
 
 extension DetailNoteViewController: UITextViewDelegate  {
     
     func textViewDidBeginEditing(_ textView: UITextView) {
-        navigationItem.rightBarButtonItems?.insert(doneButton!, at: 0)
-    }
-    
-    
-    func textViewDidEndEditing(_ textView: UITextView) {
-        navigationItem.rightBarButtonItems?.remove(at: 0)
+        navigationItem.rightBarButtonItems = [doneButton, shareButton]
+        
     }
     
     
     func textViewDidChange(_ textView: UITextView) {
-//
-//        // Save current cursor position
-//        let selectedRange = textView.selectedRange
-//
-//        // Update styles
-//        updateTextViewStyle()
-//
-//        // Restore cursor position
-//        textView.selectedRange = selectedRange
+        navigationItem.rightBarButtonItems = [doneButton, shareButton, redoButton, undoButton]
+        
+        if let undoManager = textView.undoManager {
+            undoButton.isEnabled = undoManager.canUndo
+            redoButton.isEnabled = undoManager.canRedo
+        }
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "d MMMM yyyy 'at' h:mm a"
+        dateEditedLabel.text = formatter.string(from: Date())
+        
+        setupTextViewStyle()
+    }
+    
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        navigationItem.rightBarButtonItems = [shareButton]
     }
     
 }

@@ -68,7 +68,7 @@ class NoteCollectionViewCell: UICollectionViewCell {
             let textView = UITextView()
             textView.text = text
             textView.frame = CGRect(x: 0, y: 0, width: 200, height: 150)
-            textView.font = UIFont.systemFont(ofSize: 18)
+            textView.font = UIFont.systemFont(ofSize: 13)
             textView.textContainerInset = .init(top: 15, left: 15, bottom: 15, right: 15)
             
             let renderer = UIGraphicsImageRenderer(size: textView.bounds.size)

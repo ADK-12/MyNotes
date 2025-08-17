@@ -16,8 +16,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="GMV-KQ-Oov">
-                                <rect key="frame" x="16" y="118" width="361" height="666"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0qZ-CO-GuP">
+                                <rect key="frame" x="182" y="68" width="29" height="17"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="17" id="w9a-6u-iZT"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" contentInsetAdjustmentBehavior="never" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="GMV-KQ-Oov">
+                                <rect key="frame" x="16" y="88" width="361" height="696"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <color key="textColor" systemColor="labelColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -35,11 +44,14 @@
                         <constraints>
                             <constraint firstItem="GMV-KQ-Oov" firstAttribute="leading" secondItem="fI8-cf-UNq" secondAttribute="leading" constant="16" id="Akv-BK-8i3"/>
                             <constraint firstItem="fI8-cf-UNq" firstAttribute="bottom" secondItem="GMV-KQ-Oov" secondAttribute="bottom" id="QRT-Nt-VW5"/>
+                            <constraint firstItem="0qZ-CO-GuP" firstAttribute="centerX" secondItem="fI8-cf-UNq" secondAttribute="centerX" id="ViO-lw-9ZB"/>
+                            <constraint firstItem="0qZ-CO-GuP" firstAttribute="top" secondItem="fI8-cf-UNq" secondAttribute="top" constant="-50" id="cVi-7G-yue"/>
                             <constraint firstItem="fI8-cf-UNq" firstAttribute="trailing" secondItem="GMV-KQ-Oov" secondAttribute="trailing" constant="16" id="iow-c5-o8N"/>
-                            <constraint firstItem="GMV-KQ-Oov" firstAttribute="top" secondItem="fI8-cf-UNq" secondAttribute="top" id="m5A-DP-oZF"/>
+                            <constraint firstItem="GMV-KQ-Oov" firstAttribute="top" secondItem="fI8-cf-UNq" secondAttribute="top" constant="-30" id="m5A-DP-oZF"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="dateEditedLabel" destination="0qZ-CO-GuP" id="E73-eH-n46"/>
                         <outlet property="textView" destination="GMV-KQ-Oov" id="igB-Zb-xBw"/>
                     </connections>
                 </viewController>

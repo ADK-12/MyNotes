@@ -173,6 +173,7 @@ class NotesViewController: UIViewController {
     
     func setupSearchController() {
         searchController = UISearchController(searchResultsController: nil)
+        searchController.searchResultsUpdater = self
         searchController.searchBar.placeholder = "Search"
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
@@ -802,4 +803,13 @@ extension NotesViewController: UICollectionViewDelegate {
         }
     }
     
+}
+
+
+extension NotesViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        if let searchText = searchController.searchBar.text {
+            
+        }
+    }
 }
