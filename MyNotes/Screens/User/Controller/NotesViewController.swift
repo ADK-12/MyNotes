@@ -173,10 +173,13 @@ class NotesViewController: UIViewController {
     
     func setupSearchController() {
         searchController = UISearchController(searchResultsController: nil)
+        searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchResultsUpdater = self
         searchController.searchBar.placeholder = "Search"
+        searchController.hidesNavigationBarDuringPresentation = true
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
+        definesPresentationContext = true
     }
     
     
@@ -808,8 +811,34 @@ extension NotesViewController: UICollectionViewDelegate {
 
 extension NotesViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        if let searchText = searchController.searchBar.text {
+        if let searchText = searchController.searchBar.text?.lowercased().trimmingCharacters(in: .whitespacesAndNewlines) {
             
+            notes = manager.fetchNotes()
+            sortOutPinnedNotes()
+            sortNotes()
+            
+            if !searchText.isEmpty {
+                notes.removeAll { note in
+                    if let text = note.text {
+                        return !text.lowercased().trimmingCharacters(in: .whitespacesAndNewlines).contains(searchText)
+                    } else {
+                        return false
+                    }
+                }
+                pinnedNotes.removeAll { note in
+                    if let text = note.text {
+                        return !text.lowercased().trimmingCharacters(in: .whitespacesAndNewlines).contains(searchText)
+                    } else {
+                        return false
+                    }
+                }
+            }
+            
+            if userDefaults.bool(forKey: "isGalleryView") {
+                notesCollectionView.reloadData()
+            } else {
+                notesTableView.reloadData()
+            }
         }
     }
 }
