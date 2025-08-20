@@ -154,9 +154,9 @@
 		485518AD2E4D07B4002BC3BD /* User */ = {
 			isa = PBXGroup;
 			children = (
-				4855188F2E4D079D002BC3BD /* Controller */,
-				483A43C22E4E2D96004E8C5A /* View */,
 				485518942E4D079D002BC3BD /* Model */,
+				483A43C22E4E2D96004E8C5A /* View */,
+				4855188F2E4D079D002BC3BD /* Controller */,
 			);
 			path = User;
 			sourceTree = "<group>";
