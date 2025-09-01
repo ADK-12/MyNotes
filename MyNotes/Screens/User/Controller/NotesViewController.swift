@@ -165,9 +165,45 @@ class NotesViewController: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.tintColor = UIColor(red: 214/255, green: 170/255, blue: 6/255, alpha: 1)
         
+        addKeyboardObserver()
+        
         setupSearchController()
         
         setupToolbar()
+    }
+    
+    
+    func addKeyboardObserver() {
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillHideNotification, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+    }
+    
+    
+    @objc func adjustForKeyboard(notification: Notification){
+        guard let keyboardValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
+        
+        let keyboardScreenEndFrame = keyboardValue.cgRectValue
+        let keyboardViewEndFrame = view.convert(keyboardScreenEndFrame, from: view.window)
+        
+        if userDefaults.bool(forKey: "isGalleryView") {
+            if notification.name == UIResponder.keyboardWillHideNotification {
+                notesCollectionView.contentInset = .zero
+            } else {
+                notesCollectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height - view.safeAreaInsets.bottom, right: 0)
+            }
+            
+            notesCollectionView.scrollIndicatorInsets = notesTableView.contentInset
+        } else {
+            if notification.name == UIResponder.keyboardWillHideNotification {
+                notesTableView.contentInset = .zero
+            } else {
+                notesTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height - view.safeAreaInsets.bottom, right: 0)
+            }
+            
+            notesTableView.scrollIndicatorInsets = notesTableView.contentInset
+        }
+        
     }
     
     

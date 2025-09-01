@@ -45,21 +45,30 @@ class NoteCollectionViewCell: UICollectionViewCell {
             
             let formatter = DateFormatter()
             let calendar = Calendar.current
-            let noteEditedDay = calendar.component(.day, from: date)
-            let currentDay = calendar.component(.day, from: Date())
             
-            if noteEditedDay == currentDay {
-                formatter.dateFormat = "h:mm a"
-                formatter.amSymbol = "AM"
-                formatter.pmSymbol = "PM"
-                whenEdited = formatter.string(from: date)
-            } else if noteEditedDay + 1 == currentDay {
-                whenEdited = "Yesterday"
-            } else if noteEditedDay + 7 > currentDay {
-                whenEdited = "\(calendar.component(.weekday, from: date))"
+            let now = Date()
+            let startOfToday = calendar.startOfDay(for: now)
+            let startOfDate = calendar.startOfDay(for: date)
+                
+            let components = calendar.dateComponents([.day], from: startOfDate, to: startOfToday)
+            
+            if let dayDifference = components.day {
+                if dayDifference == 0 {
+                    formatter.dateFormat = "h:mm a"
+                    formatter.amSymbol = "AM"
+                    formatter.pmSymbol = "PM"
+                    whenEdited = formatter.string(from: date)
+                } else if dayDifference == 1 {
+                    whenEdited = "Yesterday"
+                } else if dayDifference < 7 {
+                    formatter.dateFormat = "EEEE"
+                    whenEdited = formatter.string(from: date)
+                } else {
+                    formatter.dateFormat = "dd/MM/yy"
+                    whenEdited = formatter.string(from: date)
+                }
             } else {
-                formatter.dateFormat = "dd/MM/yy"
-                whenEdited = formatter.string(from: date)
+                whenEdited = ""
             }
             
             title.text = heading
