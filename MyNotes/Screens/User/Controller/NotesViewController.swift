@@ -293,7 +293,7 @@ class NotesViewController: UIViewController {
     func setupToolbar() {
         totalNotes = notes.count + pinnedNotes.count
         totalLabel.font = UIFont.systemFont(ofSize: 10)
-        totalLabel.textColor = .black
+        totalLabel.textColor = .label
         totalLabel.sizeToFit()
         let totalNotesLabel = UIBarButtonItem(customView: totalLabel)
         

@@ -146,6 +146,7 @@ class DetailNoteViewController: UIViewController {
         }
         
         textView.attributedText = attributedString
+        textView.textColor = .label
     }
     
     
