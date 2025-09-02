@@ -527,11 +527,13 @@ extension NotesViewController: UICollectionViewDataSource, UICollectionViewDeleg
         if !pinnedNotes.isEmpty {
             if indexPath.section == 0 {
                 cell.note = pinnedNotes[indexPath.row]
+                cell.inSelectionMode = inSelectMode
                 return cell
             }
         }
         
         cell.note = notes[indexPath.row]
+        cell.inSelectionMode = inSelectMode
         return cell
     }
     
@@ -748,14 +750,38 @@ extension NotesViewController: UITableViewDelegate {
 extension NotesViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if !pinnedNotes.isEmpty {
-            if indexPath.section == 0 {
-                addUpdateNote(note: pinnedNotes[indexPath.row])
-                return
+        if inSelectMode {
+            if !pinnedNotes.isEmpty {
+                if indexPath.section == 0 {
+                    selectedPinnedNotes.insert(indexPath.row)
+                    return
+                }
             }
+            
+            selectedNotes.insert(indexPath.row)
+        } else {
+            if !pinnedNotes.isEmpty {
+                if indexPath.section == 0 {
+                    addUpdateNote(note: pinnedNotes[indexPath.row])
+                    return
+                }
+            }
+            
+            addUpdateNote(note: notes[indexPath.row])
         }
-        
-        addUpdateNote(note: notes[indexPath.row])
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        if inSelectMode {
+            if !pinnedNotes.isEmpty {
+                if indexPath.section == 0 {
+                    selectedPinnedNotes.remove(indexPath.row)
+                    return
+                }
+            }
+            
+            selectedNotes.remove(indexPath.row)
+        }
     }
     
     

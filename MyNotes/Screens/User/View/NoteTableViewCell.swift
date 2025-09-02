@@ -125,8 +125,4 @@ class NoteTableViewCell: UITableViewCell {
         }
     }
     
-    func cellSelectedView() {
-        
-    }
-    
 }

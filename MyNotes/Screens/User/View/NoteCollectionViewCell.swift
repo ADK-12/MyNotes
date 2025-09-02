@@ -9,6 +9,7 @@ import UIKit
 
 class NoteCollectionViewCell: UICollectionViewCell {
     
+    @IBOutlet var selectButton: UIButton!
     @IBOutlet var displayImage: UIImageView!
     @IBOutlet var title: UILabel!
     @IBOutlet var subtitle: UILabel!
@@ -19,9 +20,32 @@ class NoteCollectionViewCell: UICollectionViewCell {
         }
     }
     
+    var inSelectionMode: Bool? {
+        didSet {
+            changeView()
+        }
+    }
+    
+    override var isSelected: Bool {
+        didSet {
+            if isSelected {
+                selectButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
+                selectButton.tintColor = UIColor(red: 214/255, green: 170/255, blue: 6/255, alpha: 1)
+                displayImage.layer.borderWidth = 2
+                displayImage.layer.borderColor = UIColor(red: 214/255, green: 170/255, blue: 6/255, alpha: 1).cgColor
+            } else {
+                selectButton.setImage(UIImage(systemName: "circle"), for: .normal)
+                selectButton.tintColor = .lightGray
+                displayImage.layer.borderWidth = 0
+            }
+        }
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         displayImage.layer.cornerRadius = 8
+        selectButton.setImage(UIImage(systemName: "circle"), for: .normal)
+        selectButton.tintColor = .lightGray
         // Initialization code
     }
     
@@ -86,6 +110,12 @@ class NoteCollectionViewCell: UICollectionViewCell {
             }
             displayImage.image = image
         }
+    }
+    
+    func changeView() {
+        guard let inSelectionMode else { return }
+        
+        selectButton.isHidden = !inSelectionMode
     }
 
 }
